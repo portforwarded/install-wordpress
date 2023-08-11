@@ -72,8 +72,8 @@ done
 
 # The values to replace for lines 23, 26, and 29
 db_name="wordpress"
-db_user="mogwai"
-db_password="@?TY=Gem3[te[zx.i7#"
+db_user="admin"
+db_password="default"
 
 # Use sed with sudo -u www-data to edit the file with www-data user privileges
 sudo -u www-data bash -c "sed -i \"s/define( 'DB_NAME', '.*' );/define( 'DB_NAME', '$db_name' );/\" \"$wp_config\""
