@@ -1,5 +1,10 @@
 #!/bin/bash
 
+echo "Enter a username for MySQL database: "
+read username
+echo "Enter a password for MySQL database: "
+read password
+
 # Set the temporary directory for sed
 export TMPDIR=/tmp
 
@@ -37,15 +42,15 @@ sudo a2enmod rewrite
 sudo a2dissite 000-default
 
 # Create database, admin user, grant privs, start database service
-sudo mysql -u root -e "CREATE DATABASE wordpress; CREATE USER admin@localhost IDENTIFIED BY 'default'; GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER ON wordpress.* TO admin@localhost; FLUSH 
+sudo mysql -u root -e "CREATE DATABASE wordpress; CREATE USER $username@localhost IDENTIFIED BY '$password'; GRANT ALL PRIVILEGES ON wordpress.* TO $username@localhost; FLUSH 
 PRIVILEGES;"
 sudo service mysql start
 
 # Create and edit the wordpress config file
 sudo -u www-data cp /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php
-sudo -u www-data sed -i 's/database_name_here/wordpress/' /var/www/html/wordpress/wp-config.php
-sudo -u www-data sed -i 's/username_here/admin/' /var/www/html/wordpress/wp-config.php
-sudo -u www-data sed -i 's/password_here/default/' /var/www/html/wordpress/wp-config.php
+sudo -u www-data sed -i "s/database_name_here/wordpress/" /var/www/html/wordpress/wp-config.php
+sudo -u www-data sed -i "s/username_here/$username/" /var/www/html/wordpress/wp-config.php
+sudo -u www-data sed -i "s/password_here/$password/" /var/www/html/wordpress/wp-config.php
 
 # set wp-config.php file path
 wp_config="/var/www/html/wordpress/wp-config.php"
@@ -72,8 +77,8 @@ done
 
 # The values to replace for lines 23, 26, and 29
 db_name="wordpress"
-db_user="admin"
-db_password="default"
+db_user="$username"
+db_password="$password"
 
 # Use sed with sudo -u www-data to edit the file with www-data user privileges
 sudo -u www-data bash -c "sed -i \"s/define( 'DB_NAME', '.*' );/define( 'DB_NAME', '$db_name' );/\" \"$wp_config\""
@@ -84,7 +89,7 @@ sudo -u www-data bash -c "sed -i \"s/define( 'DB_PASSWORD', '.*' );/define( 'DB_
 sudo apt install phpmyadmin php-mbstring php-zip php-gd php-json php-curl -y
 sudo phpenmod mbstring
 sudo a2enmod headers
-sudo service reload apache2
+sudo systemctl reload apache2
 sudo systemctl restart apache2
 
 # Remove the key file
