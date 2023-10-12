@@ -42,7 +42,7 @@ sudo a2enmod rewrite
 sudo a2dissite 000-default
 
 # Create database, admin user, grant privs, start database service
-sudo mysql -u root -e "CREATE DATABASE wordpress; CREATE USER $username@localhost IDENTIFIED BY '$password'; GRANT ALL PRIVILEGES ON wordpress.* TO $username@localhost; FLUSH 
+sudo mysql -u root -e "CREATE DATABASE wordpress; CREATE USER $username@localhost IDENTIFIED BY '$password'; GRANT ALL PRIVILEGES ON *.* TO $username@localhost; FLUSH 
 PRIVILEGES;"
 sudo service mysql start
 
